@@ -1,0 +1,26 @@
+{
+  "name": "letzify",
+  "version": "1.0.0",
+  "description": "Letzify - Monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run start:dev -w api",
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "prettier --write \"**/*.{ts,js,json,css,scss,md}\""
+  },
+  "keywords": [
+    "nestjs",
+    "vue",
+    "monorepo"
+  ],
+  "author": "Pedro Henrique Chemin Prado",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "^3.8.3"
+  }
+}
