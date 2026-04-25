@@ -9,10 +9,10 @@
 
 ## 🎯 RA1 - Arquitetura, Engenharia de Requisitos com IA e Gestão Ágil
 
-- [ ] **ID1:** Estruturou o **PRD** e o **SDD** (Diagrama Mermaid) de forma clara, utilizando a IA para modelar o negócio.
+- [X] **ID1:** Estruturou o **PRD** e o **SDD** (Diagrama Mermaid) de forma clara, utilizando a IA para modelar o negócio.
 - [ ] **ID2:** A aplicação foi estruturada em formato de **Monorepo** (Front + Back) no GitHub.
-- [ ] **ID3:** Mapeou o PRD em **Histórias de Usuário** no GitHub Projects, criando um backlog rastreável de Issues.
-- [ ] **ID4:** Demonstrou domínio do **GitFlow**, isolando features e utilizando Pull Requests para integração.
+- [X] **ID3:** Mapeou o PRD em **Histórias de Usuário** no GitHub Projects, criando um backlog rastreável de Issues.
+- [X] **ID4:** Demonstrou domínio do **GitFlow**, isolando features e utilizando Pull Requests para integração.
 
 ---
 
