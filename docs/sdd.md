@@ -250,3 +250,28 @@ As seguintes variáveis são o contrato obrigatório para o arquivo `.env`:
 - `JWT_SECRET` = Chave para assinar o token de sessão do usuário.
 - `JWT_EXPIRES_IN` = Tempo de expiração da sessão (ex: `8h`).
 - `CORS_ORIGIN` = Origem permitida para o frontend Vue 3.
+
+---
+
+## 🎨 Design Tokens (Identidade Visual)
+
+### 🎨 Cores
+
+Primárias:
+- #6B4773 (Old Heliotrope)
+- #BB3F95 (Royal Fuchsia)
+
+Secundárias:
+- #231F48 (Space Cadet)
+- #560A39 (Tyrian Purple)
+
+Neutras:
+- #E0E1F6 (Lavender Mist)
+- #FFFFFF (White)
+
+---
+
+### 🔤 Tipografia
+
+- **Títulos (Headings):** Inter ou Poppins (sans-serif moderno)
+- **Corpo (Body):** Inter ou system UI sans-serif
