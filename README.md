@@ -21,6 +21,12 @@ Toda a especificação do sistema está versionada na pasta `/docs`:
 - 📐 **[SDD (Software Design Document)](./docs/sdd.md):** Arquitetura, diagrama ER (Mermaid), DTOs e decisões técnicas.
 - ✅ **[Checklist de Avaliação](./docs/checklist.md):** Controle de entrega dos IDs e Resultados de Aprendizagem (RA).
 
+## 🎨 Protótipo UI/UX
+
+Este projeto inclui um protótipo de alta fidelidade criado via IA (Stitch), representando os principais fluxos de usuário e interface baseados no PRD.
+
+🔗 Link do Protótipo: https://stitch.withgoogle.com/projects/3118950778668959974
+
 ## 🛠 3. Stack Tecnológica
 
 - **Arquitetura:** Monorepo com backend e frontend no mesmo repositório.
