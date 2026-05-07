@@ -1,6 +1,18 @@
-import { Controller, Post, Body, Get, Param, Put, Delete, HttpCode } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Get,
+    Param,
+    Patch,
+    Delete,
+    HttpCode,
+    Query,
+} from '@nestjs/common';
+import { ParseIdPipe } from '../common/pipes/parse-id.pipe';
 import { ProjectsService } from './projects.service';
-import { Project } from './interfaces/project.interface';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { QueryFilterDto } from './dto/query-filter.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -8,28 +20,28 @@ export class ProjectsController {
 
     @Post()
     @HttpCode(201)
-    create(@Body() item: Project) {
-        return this.projectsService.create(item);
+    create(@Body() dto: CreateProjectDto) {
+        return this.projectsService.create(dto);
     }
 
     @Get()
-    findAll() {
-        return this.projectsService.findAll();
+    findAll(@Query() query: QueryFilterDto) {
+        return this.projectsService.findAll(query);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id', ParseIdPipe) id: number) {
         return this.projectsService.findOne(id);
     }
 
-    @Put(':id')
-    update(@Param('id') id: string, @Body() data: Partial<Project>) {
-        return this.projectsService.update(id, data);
+    @Patch(':id')
+    update(@Param('id', ParseIdPipe) id: number, @Body() dto: Partial<CreateProjectDto>) {
+        return this.projectsService.update(id, dto);
     }
 
     @Delete(':id')
     @HttpCode(204)
-    remove(@Param('id') id: string) {
+    remove(@Param('id', ParseIdPipe) id: number) {
         this.projectsService.remove(id);
     }
 }

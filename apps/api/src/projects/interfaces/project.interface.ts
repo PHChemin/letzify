@@ -1,5 +1,5 @@
 export interface BrandProject {
-  id: string;
+  id: number;
   ownerId: string;
   name: string;
   slug: string;
