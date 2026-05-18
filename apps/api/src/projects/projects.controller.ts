@@ -8,13 +8,16 @@ import {
     Delete,
     HttpCode,
     Query,
+    UseFilters,
 } from '@nestjs/common';
 import { ParseIdPipe } from '../common/pipes/parse-id.pipe';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { QueryFilterDto } from './dto/query-filter.dto';
+import { ProjectAlreadyExistsFilter } from './filters/project-already-exists.filter';
 
 @Controller('projects')
+@UseFilters(ProjectAlreadyExistsFilter)
 export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService) { }
 
@@ -45,3 +48,4 @@ export class ProjectsController {
         this.projectsService.remove(id);
     }
 }
+

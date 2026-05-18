@@ -2,16 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Project } from './interfaces/project.interface';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { QueryFilterDto } from './dto/query-filter.dto';
+import { ProjectAlreadyExistsException } from './exceptions/project-already-exists.exception';
 
 @Injectable()
 export class ProjectsService {
   private readonly projects: Project[] = [];
 
   create(dto: CreateProjectDto) {
+    const slug = this.generateSlug(dto.name);
+    const slugExists = this.projects.some((p) => p.slug === slug);
+    if (slugExists) {
+      throw new ProjectAlreadyExistsException(dto.name);
+    }
+
     const newProject: Project = {
       id: this.projects.length + 1,
       ...dto,
-      slug: this.generateSlug(dto.name),
+      slug,
       ownerId: 'temp-owner-id',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -50,7 +57,12 @@ export class ProjectsService {
     const item = this.findOne(id);
 
     if (data.name) {
-      item.slug = this.generateSlug(data.name);
+      const slug = this.generateSlug(data.name);
+      const slugExists = this.projects.some((p) => p.slug === slug && p.id !== id);
+      if (slugExists) {
+        throw new ProjectAlreadyExistsException(data.name);
+      }
+      item.slug = slug;
     }
 
     Object.assign(item, { ...data, updatedAt: new Date() });
@@ -72,3 +84,4 @@ export class ProjectsService {
       .replace(/^-+|-+$/g, '');
   }
 }
+
