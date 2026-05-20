@@ -1,78 +1,110 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Project } from './interfaces/project.interface';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { QueryFilterDto } from './dto/query-filter.dto';
 import { ProjectAlreadyExistsException } from './exceptions/project-already-exists.exception';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProjectsService {
-  private readonly projects: Project[] = [];
+  constructor(private readonly prisma: PrismaService) { }
 
-  create(dto: CreateProjectDto) {
+  async create(dto: CreateProjectDto) {
     const slug = this.generateSlug(dto.name);
-    const slugExists = this.projects.some((p) => p.slug === slug);
+    const slugExists = await this.prisma.brandProject.findUnique({
+      where: { slug },
+    });
     if (slugExists) {
       throw new ProjectAlreadyExistsException(dto.name);
     }
 
-    const newProject: Project = {
-      id: this.projects.length + 1,
-      ...dto,
-      slug,
-      ownerId: 'temp-owner-id',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.projects.push(newProject);
-    return newProject;
-  }
-
-  findAll(query: QueryFilterDto) {
-    let results = [...this.projects];
-
-    if (query.filter) {
-      const filter = query.filter.toLowerCase();
-      results = results.filter(
-        (p) =>
-          p.name.toLowerCase().includes(filter) ||
-          p.description?.toLowerCase().includes(filter),
-      );
+    // Ensure we have a default user to satisfy the foreign key constraint
+    let owner = await this.prisma.user.findFirst();
+    if (!owner) {
+      owner = await this.prisma.user.create({
+        data: {
+          name: 'System User',
+          email: 'system@letzify.com',
+          passwordHash: 'default_hash_value',
+          isActive: true,
+        },
+      });
     }
 
-    const limit = 10;
-    const page = query.page || 1;
-    const start = (page - 1) * limit;
-
-    return results.slice(start, start + limit);
+    return this.prisma.brandProject.create({
+      data: {
+        name: dto.name,
+        slug,
+        description: dto.description || null,
+        status: dto.status || 'ALIGNMENT',
+        ownerId: owner.id,
+      },
+    });
   }
 
-  findOne(id: number) {
-    const project = this.projects.find((item) => item.id === id);
+  async findAll(query: QueryFilterDto) {
+    const limit = 10;
+    const page = query.page || 1;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.BrandProjectWhereInput = {};
+    if (query.filter) {
+      where.OR = [
+        { name: { contains: query.filter, mode: 'insensitive' } },
+        { description: { contains: query.filter, mode: 'insensitive' } },
+      ];
+    }
+
+    return this.prisma.brandProject.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findOne(id: string) {
+    const project = await this.prisma.brandProject.findUnique({
+      where: { id },
+    });
     if (!project) throw new NotFoundException('Projeto não encontrado');
     return project;
   }
 
-  update(id: number, data: Partial<CreateProjectDto>) {
-    const item = this.findOne(id);
+  async update(id: string, data: Partial<CreateProjectDto>) {
+    const project = await this.findOne(id);
+
+    const updateData: Prisma.BrandProjectUpdateInput = {
+      description: data.description,
+      status: data.status,
+    };
 
     if (data.name) {
       const slug = this.generateSlug(data.name);
-      const slugExists = this.projects.some((p) => p.slug === slug && p.id !== id);
+      const slugExists = await this.prisma.brandProject.findFirst({
+        where: {
+          slug,
+          id: { not: id },
+        },
+      });
       if (slugExists) {
         throw new ProjectAlreadyExistsException(data.name);
       }
-      item.slug = slug;
+      updateData.name = data.name;
+      updateData.slug = slug;
     }
 
-    Object.assign(item, { ...data, updatedAt: new Date() });
-    return item;
+    return this.prisma.brandProject.update({
+      where: { id },
+      data: updateData,
+    });
   }
 
-  remove(id: number) {
-    const index = this.projects.findIndex((item) => item.id === id);
-    if (index === -1) throw new NotFoundException('Projeto não encontrado');
-    this.projects.splice(index, 1);
+  async remove(id: string) {
+    await this.findOne(id);
+    await this.prisma.brandProject.delete({
+      where: { id },
+    });
   }
 
   private generateSlug(name: string): string {
@@ -84,4 +116,3 @@ export class ProjectsService {
       .replace(/^-+|-+$/g, '');
   }
 }
-

@@ -33,18 +33,18 @@ export class ProjectsController {
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIdPipe) id: number) {
+    findOne(@Param('id', ParseIdPipe) id: string) {
         return this.projectsService.findOne(id);
     }
 
     @Patch(':id')
-    update(@Param('id', ParseIdPipe) id: number, @Body() dto: Partial<CreateProjectDto>) {
+    update(@Param('id', ParseIdPipe) id: string, @Body() dto: Partial<CreateProjectDto>) {
         return this.projectsService.update(id, dto);
     }
 
     @Delete(':id')
     @HttpCode(204)
-    remove(@Param('id', ParseIdPipe) id: number) {
+    remove(@Param('id', ParseIdPipe) id: string) {
         this.projectsService.remove(id);
     }
 }
