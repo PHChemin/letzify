@@ -4,6 +4,8 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { LoginResponseDto } from './dto/login-response.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
@@ -42,7 +44,7 @@ export class AuthService {
     return safeUser;
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<LoginResponseDto> {
     const { email, password } = dto;
 
     const user = await this.prisma.user.findUnique({ where: { email } });
@@ -58,9 +60,17 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas.');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      roles: user.roles,
+    };
     const token = await this.jwtService.signAsync(payload);
 
-    return { access_token: token };
+    // remove passwordHash before returning
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _, ...safeUser } = user as any;
+
+    return { access_token: token, user: safeUser };
   }
 }
