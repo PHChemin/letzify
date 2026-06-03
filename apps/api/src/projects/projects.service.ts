@@ -7,9 +7,9 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateProjectDto) {
+  async create(dto: CreateProjectDto, ownerId: string) {
     const slug = this.generateSlug(dto.name);
     const slugExists = await this.prisma.brandProject.findUnique({
       where: { slug },
@@ -18,36 +18,25 @@ export class ProjectsService {
       throw new ProjectAlreadyExistsException(dto.name);
     }
 
-    // Ensure we have a default user to satisfy the foreign key constraint
-    let owner = await this.prisma.user.findFirst();
-    if (!owner) {
-      owner = await this.prisma.user.create({
-        data: {
-          name: 'System User',
-          email: 'system@letzify.com',
-          passwordHash: 'default_hash_value',
-          isActive: true,
-        },
-      });
-    }
-
     return this.prisma.brandProject.create({
       data: {
         name: dto.name,
         slug,
         description: dto.description || null,
         status: dto.status || 'ALIGNMENT',
-        ownerId: owner.id,
+        ownerId,
       },
     });
   }
 
-  async findAll(query: QueryFilterDto) {
+  async findAll(query: QueryFilterDto, ownerId: string) {
     const limit = 10;
     const page = query.page || 1;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.BrandProjectWhereInput = {};
+    const where: Prisma.BrandProjectWhereInput = {
+      ownerId,
+    };
     if (query.filter) {
       where.OR = [
         { name: { contains: query.filter, mode: 'insensitive' } },
@@ -63,16 +52,16 @@ export class ProjectsService {
     });
   }
 
-  async findOne(id: string) {
-    const project = await this.prisma.brandProject.findUnique({
-      where: { id },
+  async findOne(id: string, ownerId: string) {
+    const project = await this.prisma.brandProject.findFirst({
+      where: { id, ownerId },
     });
     if (!project) throw new NotFoundException('Projeto não encontrado');
     return project;
   }
 
-  async update(id: string, data: Partial<CreateProjectDto>) {
-    const project = await this.findOne(id);
+  async update(id: string, data: Partial<CreateProjectDto>, ownerId: string) {
+    const project = await this.findOne(id, ownerId);
 
     const updateData: Prisma.BrandProjectUpdateInput = {
       description: data.description,
@@ -100,8 +89,8 @@ export class ProjectsService {
     });
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(id: string, ownerId: string) {
+    await this.findOne(id, ownerId);
     await this.prisma.brandProject.delete({
       where: { id },
     });

@@ -43,10 +43,11 @@ describe('ProjectAlreadyExistsFilter', () => {
     expect(mockResponse.status).toHaveBeenCalledWith(409);
     expect(mockResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        success: false,
-        errorCode: 'PROJECT_ALREADY_EXISTS',
-        message: 'Operação negada: Já existe um projeto cadastrado com o nome "Letzify".',
+        statusCode: 409,
+        message:
+          'Operação negada: Já existe um projeto cadastrado com o nome "Letzify".',
         path: '/projects',
+        timestamp: expect.any(String),
       }),
     );
   });
