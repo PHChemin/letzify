@@ -71,6 +71,6 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash: _, ...safeUser } = user as any;
 
-    return { access_token: token, user: safeUser };
+    return { accessToken: token, user: safeUser };
   }
 }
