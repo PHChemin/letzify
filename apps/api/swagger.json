@@ -1,0 +1,581 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "summary": "Realiza o registro do usuário",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário registrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos no payload"
+          },
+          "409": {
+            "description": "Email já está em uso"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "Realiza login com email e senha",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos no payload"
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/admin": {
+      "get": {
+        "operationId": "AdminController_getAdmin",
+        "summary": "Acessa a área restrita de administração",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Mensagem de boas-vindas ao administrador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Bem Vindo, Admin!"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          },
+          "403": {
+            "description": "Usuário sem role ADMIN"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "operationId": "UsersController_me",
+        "summary": "Retorna o perfil do usuário autenticado",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Perfil do usuário autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects": {
+      "post": {
+        "operationId": "ProjectsController_create",
+        "summary": "Cria um novo projeto de identidade visual",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Projeto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos no payload"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ProjectsController_findAll",
+        "summary": "Lista os projetos do usuário autenticado",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Texto para filtrar projetos por nome ou descrição",
+            "schema": {
+              "example": "campanha",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de projetos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "operationId": "ProjectsController_findOne",
+        "summary": "Busca um projeto pelo identificador",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projeto encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ProjectsController_update",
+        "summary": "Atualiza os dados de um projeto",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Projeto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ProjectsController_remove",
+        "summary": "Remove um projeto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API com Swagger",
+    "description": "Documentação automática da API com Swagger",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "designer@letzify.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "senha123"
+          },
+          "name": {
+            "type": "string",
+            "example": "Designer Letzify"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "email": {
+            "type": "string",
+            "example": "designer@letzify.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Designer Letzify"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "roles": {
+            "type": "array",
+            "example": [
+              "USER"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "USER",
+                "ADMIN"
+              ]
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "isActive",
+          "roles",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "designer@letzify.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "senha123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "user"
+        ]
+      },
+      "CreateProjectDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Brandbook 2026"
+          },
+          "description": {
+            "type": "string",
+            "example": "Projeto de identidade visual da campanha 2026"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ALIGNMENT",
+              "IN_PROGRESS",
+              "FINISHED"
+            ],
+            "example": "ALIGNMENT"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ProjectResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Brandbook 2026"
+          },
+          "slug": {
+            "type": "string",
+            "example": "brandbook-2026"
+          },
+          "description": {
+            "type": "string",
+            "example": "Projeto de identidade visual da campanha 2026"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ALIGNMENT",
+              "IN_PROGRESS",
+              "FINISHED"
+            ],
+            "example": "ALIGNMENT"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "name",
+          "slug",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      }
+    }
+  }
+}
