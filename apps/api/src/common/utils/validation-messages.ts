@@ -9,6 +9,8 @@ export const ValidationMessages = {
   IsInt: (property: string) =>
     `O campo ${property} deve ser um número inteiro.`,
   IsNumber: (property: string) => `O campo ${property} deve ser um número.`,
+  Min: (property: string, min: number) =>
+    `O campo ${property} deve ser maior ou igual a ${min}.`,
   IsEmail: (property: string) =>
     `O campo ${property} deve ser um e-mail válido.`,
   IsUUID: (property: string) => `O campo ${property} deve ser um UUID válido.`,
