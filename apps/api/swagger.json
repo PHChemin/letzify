@@ -988,6 +988,252 @@
           }
         ]
       }
+    },
+    "/projects/{projectId}/assets": {
+      "post": {
+        "operationId": "AssetsController_create",
+        "summary": "Cria um asset visual vinculado a um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asset visual criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "AssetsController_findAll",
+        "summary": "Lista assets visuais de um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets visuais retornados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/assets/{id}": {
+      "get": {
+        "operationId": "AssetsController_findOne",
+        "summary": "Busca um asset visual pelo identificador",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do asset visual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset visual encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "AssetsController_update",
+        "summary": "Atualiza os dados de um asset visual",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do asset visual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asset visual atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID, projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AssetsController_remove",
+        "summary": "Remove um asset visual existente",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do asset visual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -1419,6 +1665,146 @@
             "example": 700,
             "minimum": 1,
             "maximum": 1000
+          }
+        }
+      },
+      "CreateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048,
+            "minimum": 1
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
+          }
+        },
+        "required": [
+          "name",
+          "assetType",
+          "fileUrl",
+          "fileKey"
+        ]
+      },
+      "AssetResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "projectId": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "uploadedById": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "uploadedById",
+          "name",
+          "assetType",
+          "fileUrl",
+          "fileKey",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048,
+            "minimum": 1
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
           }
         }
       }
