@@ -373,6 +373,621 @@
           }
         ]
       }
+    },
+    "/projects/{projectId}/palettes": {
+      "post": {
+        "operationId": "PaletteController_create",
+        "summary": "Cria paleta vinculada a um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaletteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paleta criada com sucesso"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "PaletteController_findAll",
+        "summary": "Lista paletas de um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paletas retornadas com sucesso"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/palettes/{id}": {
+      "get": {
+        "operationId": "PaletteController_findOne",
+        "summary": "Busca uma paleta pelo identificador",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paleta encontrada com sucesso"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "PaletteController_update",
+        "summary": "Atualiza dados de uma paleta",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaletteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paleta atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "PaletteController_remove",
+        "summary": "Remove uma paleta existente",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/palettes/{paletteId}/colors": {
+      "get": {
+        "operationId": "ColorController_findAll",
+        "summary": "Lista as cores de uma paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cores retornada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "ColorController_create",
+        "summary": "Adiciona uma nova cor a paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateColorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cor criada com sucesso"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/palettes/{paletteId}/colors/{colorId}": {
+      "patch": {
+        "operationId": "ColorController_update",
+        "summary": "Atualiza uma cor da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colorId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da cor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateColorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cor atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ColorController_remove",
+        "summary": "Remove uma cor da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colorId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da cor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/palettes/{paletteId}/colors/reorder": {
+      "patch": {
+        "operationId": "ColorController_reorder",
+        "summary": "Reordena as cores da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderColorsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ordem atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/typographies": {
+      "post": {
+        "operationId": "TypographiesController_create",
+        "summary": "Cria uma tipografia vinculada a um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTypographyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipografia criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypographyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "TypographiesController_findAll",
+        "summary": "Lista tipografias de um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipografias retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TypographyResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/typographies/{id}": {
+      "get": {
+        "operationId": "TypographiesController_findOne",
+        "summary": "Busca uma tipografia pelo identificador",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da tipografia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipografia encontrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypographyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "TypographiesController_update",
+        "summary": "Atualiza os dados de uma tipografia",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da tipografia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTypographyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tipografia atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypographyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID, projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "TypographiesController_remove",
+        "summary": "Remove uma tipografia existente",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da tipografia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -575,6 +1190,237 @@
           "createdAt",
           "updatedAt"
         ]
+      },
+      "CreatePaletteDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Paleta Principal"
+          },
+          "description": {
+            "type": "string",
+            "example": "Paleta principal do projeto"
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdatePaletteDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Paleta Principal"
+          },
+          "description": {
+            "type": "string",
+            "example": "Paleta principal do projeto"
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "CreateColorDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Primary Purple"
+          },
+          "hexCode": {
+            "type": "string",
+            "example": "#6B4773"
+          },
+          "rgbValue": {
+            "type": "string",
+            "example": "rgb(107,71,115)"
+          },
+          "cmykValue": {
+            "type": "string",
+            "example": "cmyk(10,50,0,20)"
+          }
+        },
+        "required": [
+          "name",
+          "hexCode",
+          "rgbValue",
+          "cmykValue"
+        ]
+      },
+      "UpdateColorDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Primary Purple"
+          },
+          "hexCode": {
+            "type": "string",
+            "example": "#6B4773"
+          },
+          "rgbValue": {
+            "type": "string",
+            "example": "rgb(107,71,115)"
+          },
+          "cmykValue": {
+            "type": "string",
+            "example": "cmyk(10,50,0,20)"
+          }
+        }
+      },
+      "ReorderColorsDto": {
+        "type": "object",
+        "properties": {
+          "colorIds": {
+            "example": [
+              "color-id-1",
+              "color-id-2",
+              "color-id-3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "colorIds"
+        ]
+      },
+      "CreateTypographyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "fontFamily": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Google Fonts"
+          },
+          "category": {
+            "type": "string",
+            "example": "sans-serif"
+          },
+          "weightMin": {
+            "type": "number",
+            "example": 400,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "weightMax": {
+            "type": "number",
+            "example": 700,
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "name",
+          "fontFamily",
+          "provider"
+        ]
+      },
+      "TypographyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "projectId": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "fontFamily": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Google Fonts"
+          },
+          "category": {
+            "type": "string",
+            "example": "sans-serif"
+          },
+          "weightMin": {
+            "type": "number",
+            "example": 400
+          },
+          "weightMax": {
+            "type": "number",
+            "example": 700
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "name",
+          "fontFamily",
+          "provider",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateTypographyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "fontFamily": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Google Fonts"
+          },
+          "category": {
+            "type": "string",
+            "example": "sans-serif"
+          },
+          "weightMin": {
+            "type": "number",
+            "example": 400,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "weightMax": {
+            "type": "number",
+            "example": 700,
+            "minimum": 1,
+            "maximum": 1000
+          }
+        }
       }
     }
   }
