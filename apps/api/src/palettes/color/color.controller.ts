@@ -63,6 +63,20 @@ export class ColorController {
     return this.colorService.create(paletteId, dto, request.user.id);
   }
 
+  @ApiOperation({ summary: 'Reordena as cores da paleta' })
+  @ApiParam({ name: 'paletteId', description: 'UUID da paleta' })
+  @ApiBody({ type: ReorderColorsDto })
+  @ApiOkResponse({ description: 'Ordem atualizada com sucesso' })
+  @Patch('reorder')
+  @HttpCode(200)
+  reorder(
+    @Req() request: { user: { id: string } },
+    @Param('paletteId', ParseIdPipe) paletteId: string,
+    @Body() dto: ReorderColorsDto,
+  ) {
+    return this.colorService.reorder(paletteId, dto, request.user.id);
+  }
+
   @ApiOperation({ summary: 'Atualiza uma cor da paleta' })
   @ApiParam({ name: 'colorId', description: 'UUID da cor' })
   @ApiBody({ type: UpdateColorDto })
@@ -76,20 +90,6 @@ export class ColorController {
     @Body() dto: UpdateColorDto,
   ) {
     return this.colorService.update(paletteId, colorId, dto, request.user.id);
-  }
-
-  @ApiOperation({ summary: 'Reordena as cores da paleta' })
-  @ApiParam({ name: 'paletteId', description: 'UUID da paleta' })
-  @ApiBody({ type: ReorderColorsDto })
-  @ApiOkResponse({ description: 'Ordem atualizada com sucesso' })
-  @Patch('reorder')
-  @HttpCode(200)
-  reorder(
-    @Req() request: { user: { id: string } },
-    @Param('paletteId', ParseIdPipe) paletteId: string,
-    @Body() dto: ReorderColorsDto,
-  ) {
-    return this.colorService.reorder(paletteId, dto, request.user.id);
   }
 
   @ApiOperation({ summary: 'Remove uma cor da paleta' })
