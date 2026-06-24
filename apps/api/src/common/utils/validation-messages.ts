@@ -11,6 +11,8 @@ export const ValidationMessages = {
   IsNumber: (property: string) => `O campo ${property} deve ser um número.`,
   Min: (property: string, min: number) =>
     `O campo ${property} deve ser maior ou igual a ${min}.`,
+  Max: (property: string, max: number) =>
+    `O campo ${property} deve ser menor ou igual a ${max}.`,
   IsEmail: (property: string) =>
     `O campo ${property} deve ser um e-mail válido.`,
   IsUUID: (property: string) => `O campo ${property} deve ser um UUID válido.`,
