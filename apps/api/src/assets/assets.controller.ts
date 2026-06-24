@@ -8,13 +8,18 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { Request } from 'express';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -28,6 +33,7 @@ import { AssetsService } from './assets.service';
 import { AssetResponseDto } from './dto/asset-response.dto';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
+import { UploadAssetDto } from './dto/upload-asset.dto';
 
 type AuthenticatedRequest = Request & {
   user: {
@@ -41,6 +47,47 @@ type AuthenticatedRequest = Request & {
 @UseGuards(JwtAuthGuard)
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
+
+  @ApiOperation({ summary: 'Faz upload de um asset visual para o projeto' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        name: { type: 'string' },
+        assetType: { type: 'string' },
+      },
+      required: ['file', 'name', 'assetType'],
+    },
+  })
+  @ApiParam({ name: 'projectId', description: 'UUID do projeto' })
+  @ApiCreatedResponse({
+    description: 'Asset visual enviado com sucesso',
+    type: AssetResponseDto,
+  })
+  @Post('upload')
+  @HttpCode(201)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: memoryStorage(),
+      limits: { fileSize: 10 * 1024 * 1024 },
+    }),
+  )
+  upload(
+    @Req() request: AuthenticatedRequest,
+    @Param('projectId', ParseIdPipe) projectId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() dto: UploadAssetDto,
+  ) {
+    return this.assetsService.createFromUpload(
+      projectId,
+      file,
+      dto.name,
+      dto.assetType,
+      request.user.id,
+    );
+  }
 
   @ApiOperation({ summary: 'Cria um asset visual vinculado a um projeto' })
   @ApiParam({ name: 'projectId', description: 'UUID do projeto' })

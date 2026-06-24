@@ -8,6 +8,8 @@ import { ProjectsModule } from './projects/projects.module';
 import { PalettesModule } from './palettes/palettes.module';
 import { TypographiesModule } from './typographies/typographies.module';
 import { AssetsModule } from './assets/assets.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { StorageModule } from './storage/storage.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from './config/config.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
@@ -21,6 +23,8 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
     PalettesModule,
     TypographiesModule,
     AssetsModule,
+    DashboardModule,
+    StorageModule,
     PrismaModule,
     ConfigModule,
   ],

@@ -10,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { ValidationMessages } from '../../common/utils/validation-messages';
+import { OptionalStringTransform } from '../../common/transforms/optional-string.transform';
 
 export class CreateTypographyDto {
   @ApiProperty({ example: 'Inter' })
@@ -34,9 +35,9 @@ export class CreateTypographyDto {
   provider: string;
 
   @ApiPropertyOptional({ example: 'sans-serif' })
-  @IsString({ message: ValidationMessages.IsString('category') })
+  @OptionalStringTransform()
   @IsOptional()
-  @MinLength(2, { message: ValidationMessages.MinLength('category', 2) })
+  @IsString({ message: ValidationMessages.IsString('category') })
   @MaxLength(50, { message: ValidationMessages.MaxLength('category', 50) })
   category?: string;
 

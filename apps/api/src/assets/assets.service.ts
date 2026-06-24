@@ -1,12 +1,40 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
 
 @Injectable()
 export class AssetsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
+
+  async createFromUpload(
+    projectId: string,
+    file: Express.Multer.File,
+    name: string,
+    assetType: string,
+    ownerId: string,
+  ) {
+    await this.findOwnedProject(projectId, ownerId);
+    const metadata = this.storageService.buildFileMetadata(projectId, file);
+
+    return this.prisma.visualAsset.create({
+      data: {
+        projectId,
+        uploadedById: ownerId,
+        name,
+        assetType,
+        fileUrl: metadata.fileUrl,
+        fileKey: metadata.fileKey,
+        mimeType: metadata.mimeType,
+        fileSizeBytes: metadata.fileSizeBytes,
+      },
+    });
+  }
 
   async create(projectId: string, dto: CreateAssetDto, ownerId: string) {
     await this.findOwnedProject(projectId, ownerId);
@@ -96,11 +124,13 @@ export class AssetsService {
   }
 
   async remove(projectId: string, id: string, ownerId: string) {
-    await this.findOne(projectId, id, ownerId);
+    const asset = await this.findOne(projectId, id, ownerId);
 
     await this.prisma.visualAsset.delete({
       where: { id },
     });
+
+    this.storageService.deleteFile(asset.fileKey);
   }
 
   private async findOwnedProject(projectId: string, ownerId: string) {

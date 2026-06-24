@@ -219,21 +219,23 @@
               "example": 1,
               "type": "number"
             }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "example": 10,
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Lista de projetos retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProjectResponseDto"
-                  }
-                }
-              }
-            }
+            "description": "Lista paginada de projetos retornada com sucesso"
           },
           "401": {
             "description": "Token JWT ausente ou inválido"
@@ -619,6 +621,46 @@
         ]
       }
     },
+    "/palettes/{paletteId}/colors/reorder": {
+      "patch": {
+        "operationId": "ColorController_reorder",
+        "summary": "Reordena as cores da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderColorsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ordem atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/palettes/{paletteId}/colors/{colorId}": {
       "patch": {
         "operationId": "ColorController_update",
@@ -691,46 +733,6 @@
         "responses": {
           "204": {
             "description": ""
-          }
-        },
-        "tags": [
-          "colors"
-        ],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/palettes/{paletteId}/colors/reorder": {
-      "patch": {
-        "operationId": "ColorController_reorder",
-        "summary": "Reordena as cores da paleta",
-        "parameters": [
-          {
-            "name": "paletteId",
-            "required": true,
-            "in": "path",
-            "description": "UUID da paleta",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReorderColorsDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Ordem atualizada com sucesso"
           }
         },
         "tags": [
@@ -989,6 +991,70 @@
         ]
       }
     },
+    "/projects/{projectId}/assets/upload": {
+      "post": {
+        "operationId": "AssetsController_upload",
+        "summary": "Faz upload de um asset visual para o projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "assetType": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file",
+                  "name",
+                  "assetType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asset visual enviado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/projects/{projectId}/assets": {
       "post": {
         "operationId": "AssetsController_create",
@@ -1234,11 +1300,85 @@
           }
         ]
       }
+    },
+    "/files/{projectId}/{fileName}": {
+      "get": {
+        "operationId": "FilesController_download",
+        "summary": "Faz download de um asset visual armazenado",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileKey",
+            "required": true,
+            "in": "path",
+            "description": "Chave relativa do arquivo",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "files"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/dashboard/stats": {
+      "get": {
+        "operationId": "DashboardController_getStats",
+        "summary": "Retorna estatísticas do dashboard do usuário",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardStatsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "info": {
-    "title": "API com Swagger",
-    "description": "Documentação automática da API com Swagger",
+    "title": "Letzify API",
+    "description": "Documentação da API Letzify",
     "version": "1.0",
     "contact": {}
   },
@@ -1496,9 +1636,26 @@
         },
         "required": [
           "name",
-          "hexCode",
-          "rgbValue",
-          "cmykValue"
+          "hexCode"
+        ]
+      },
+      "ReorderColorsDto": {
+        "type": "object",
+        "properties": {
+          "colorIds": {
+            "example": [
+              "color-id-1",
+              "color-id-2",
+              "color-id-3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "colorIds"
         ]
       },
       "UpdateColorDto": {
@@ -1521,25 +1678,6 @@
             "example": "cmyk(10,50,0,20)"
           }
         }
-      },
-      "ReorderColorsDto": {
-        "type": "object",
-        "properties": {
-          "colorIds": {
-            "example": [
-              "color-id-1",
-              "color-id-2",
-              "color-id-3"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "colorIds"
-        ]
       },
       "CreateTypographyDto": {
         "type": "object",
@@ -1668,46 +1806,6 @@
           }
         }
       },
-      "CreateAssetDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Logo Principal"
-          },
-          "assetType": {
-            "type": "string",
-            "example": "LOGO"
-          },
-          "fileUrl": {
-            "type": "string",
-            "example": "https://cdn.letzify.dev/assets/logo.svg"
-          },
-          "fileKey": {
-            "type": "string",
-            "example": "projects/project-1/logo.svg"
-          },
-          "mimeType": {
-            "type": "string",
-            "example": "image/svg+xml"
-          },
-          "fileSizeBytes": {
-            "type": "number",
-            "example": 2048,
-            "minimum": 1
-          },
-          "checksumSha256": {
-            "type": "string",
-            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
-          }
-        },
-        "required": [
-          "name",
-          "assetType",
-          "fileUrl",
-          "fileKey"
-        ]
-      },
       "AssetResponseDto": {
         "type": "object",
         "properties": {
@@ -1774,6 +1872,46 @@
           "updatedAt"
         ]
       },
+      "CreateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048,
+            "minimum": 1
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
+          }
+        },
+        "required": [
+          "name",
+          "assetType",
+          "fileUrl",
+          "fileKey"
+        ]
+      },
       "UpdateAssetDto": {
         "type": "object",
         "properties": {
@@ -1807,6 +1945,40 @@
             "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
           }
         }
+      },
+      "DashboardStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalProjects": {
+            "type": "number",
+            "example": 12
+          },
+          "totalPalettes": {
+            "type": "number",
+            "example": 48
+          },
+          "totalAssets": {
+            "type": "number",
+            "example": 156
+          },
+          "totalTypographies": {
+            "type": "number",
+            "example": 24
+          },
+          "recentProjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectResponseDto"
+            }
+          }
+        },
+        "required": [
+          "totalProjects",
+          "totalPalettes",
+          "totalAssets",
+          "totalTypographies",
+          "recentProjects"
+        ]
       }
     }
   }
