@@ -8,3 +8,7 @@
 dist
 build
 .next
+
+# Uploaded files
+apps/api/uploads/
+uploads/

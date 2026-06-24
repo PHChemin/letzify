@@ -56,7 +56,19 @@ Como é um Monorepo, você precisa instalar os pacotes em cada camada:
     npm run dev
 
 **3. Variáveis de Ambiente:**
-Copie o arquivo `.env.example` para `.env` dentro de `apps/api` e configure, no mínimo, a `DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRES_IN` e `CORS_ORIGIN`.
+
+Copie o arquivo `.env.example` para `.env` dentro de `apps/api` e configure, no mínimo, a `DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRES_IN` e `CORS_ORIGIN` (ex: `http://localhost:5173`).
+
+Copie também `apps/web/.env.example` para `apps/web/.env` e configure `VITE_API_URL` (ex: `http://localhost:3000`).
+
+**4. Seed (usuários de demonstração):**
+
+    cd apps/api
+    npm run db:seed
+
+Credenciais criadas pelo seed:
+- `admin@letzify.com` / `Letzify123` (ADMIN)
+- `designer@letzify.com` / `Letzify123` (USER/Designer)
 
 ## 📌 5. Funcionalidades Principais
 
