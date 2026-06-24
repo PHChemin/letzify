@@ -75,10 +75,14 @@ export class ProjectsController {
     description: 'Número da página',
     example: 1,
   })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Quantidade de itens por página',
+    example: 10,
+  })
   @ApiOkResponse({
-    description: 'Lista de projetos retornada com sucesso',
-    type: ProjectResponseDto,
-    isArray: true,
+    description: 'Lista paginada de projetos retornada com sucesso',
   })
   @ApiUnauthorizedResponse({ description: 'Token JWT ausente ou inválido' })
   @Get()

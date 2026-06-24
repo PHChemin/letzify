@@ -30,8 +30,8 @@ export class ProjectsService {
   }
 
   async findAll(query: QueryFilterDto, ownerId: string) {
-    const limit = 10;
-    const page = query.page || 1;
+    const limit = query.limit ?? 10;
+    const page = query.page ?? 1;
     const skip = (page - 1) * limit;
 
     const where: Prisma.BrandProjectWhereInput = {
@@ -44,12 +44,51 @@ export class ProjectsService {
       ];
     }
 
-    return this.prisma.brandProject.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    });
+    const [items, total] = await Promise.all([
+      this.prisma.brandProject.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { updatedAt: 'desc' },
+        include: {
+          _count: {
+            select: {
+              visualAssets: true,
+              colorPalettes: true,
+            },
+          },
+          colorPalettes: {
+            where: { isPrimary: true },
+            take: 1,
+            include: {
+              paletteColors: {
+                orderBy: { sortOrder: 'asc' },
+                take: 1,
+              },
+            },
+          },
+        },
+      }),
+      this.prisma.brandProject.count({ where }),
+    ]);
+
+    return {
+      items: items.map((project) => ({
+        ...project,
+        assetCount: project._count.visualAssets,
+        paletteCount: project._count.colorPalettes,
+        primaryColor:
+          project.colorPalettes[0]?.paletteColors[0]?.hexCode ?? null,
+        _count: undefined,
+        colorPalettes: undefined,
+      })),
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.max(1, Math.ceil(total / limit)),
+      },
+    };
   }
 
   async findOne(id: string, ownerId: string) {
