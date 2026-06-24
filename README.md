@@ -67,6 +67,7 @@ Copie também `apps/web/.env.example` para `apps/web/.env` e configure `VITE_API
     npm run db:seed
 
 Credenciais criadas pelo seed:
+
 - `admin@letzify.com` / `Letzify123` (ADMIN)
 - `designer@letzify.com` / `Letzify123` (USER/Designer)
 
@@ -78,3 +79,21 @@ Credenciais criadas pelo seed:
 - Upload e organização de assets visuais (logos, imagens, mockups);
 - Autenticação segura por JWT;
 - Consumo do backend por interface web em Vue 3.
+
+## 🔄 6. Integração Contínua (CI)
+
+A esteira de CI roda automaticamente via **GitHub Actions** em push e pull request para as branches `main` e `develop`.
+
+Arquivo: [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
+
+**Validações executadas:**
+
+1. **Lint** da API (ESLint)
+2. **Testes** automatizados da API (Jest)
+3. **Build** do monorepo (NestJS + Vue)
+
+Para reproduzir localmente:
+
+    npm run ci
+
+**Branch protection (recomendado):** configure no GitHub que PRs para `main`/`develop` exijam o check **Lint, Test and Build** antes do merge (RN05 do PRD).

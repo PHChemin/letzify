@@ -11,8 +11,10 @@
     "dev:web": "npm run dev -w web",
     "prisma:studio": "npm -w api exec prisma studio",
     "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces",
+    "lint": "npm run lint:ci -w api",
+    "lint:ci": "npm run lint:ci -w api",
     "test:api": "npm run test -w api",
+    "ci": "npm run lint:ci && npm run test:api && npm run build",
     "format": "prettier --write \"**/*.{ts,js,json,css,scss,md}\""
   },
   "keywords": [
