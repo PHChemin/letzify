@@ -9,13 +9,21 @@ export class UsersService {
   async getMe(userId: string): Promise<UserDto> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        isActive: true,
+        roles: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado.');
     }
 
-    const { passwordHash: _, ...safeUser } = user as any;
-    return safeUser;
+    return user;
   }
 }

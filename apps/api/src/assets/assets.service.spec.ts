@@ -228,6 +228,8 @@ describe('AssetsService', () => {
     expect(prismaServiceMock.visualAsset.delete).toHaveBeenCalledWith({
       where: { id: 'asset-1' },
     });
-    expect(storageServiceMock.deleteFile).toHaveBeenCalledWith('project-1/file.svg');
+    expect(storageServiceMock.deleteFile).toHaveBeenCalledWith(
+      'project-1/file.svg',
+    );
   });
 });

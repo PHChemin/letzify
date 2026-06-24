@@ -100,7 +100,7 @@ export class ProjectsService {
   }
 
   async update(id: string, data: Partial<CreateProjectDto>, ownerId: string) {
-    const project = await this.findOne(id, ownerId);
+    await this.findOne(id, ownerId);
 
     const updateData: Prisma.BrandProjectUpdateInput = {
       description: data.description,
