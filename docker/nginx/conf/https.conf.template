@@ -25,5 +25,5 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers off;
 
-    include /etc/nginx/conf.d/proxy-locations.conf;
+    include /etc/nginx/includes/proxy-locations.conf;
 }

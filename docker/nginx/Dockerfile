@@ -19,7 +19,7 @@ FROM nginx:alpine
 
 RUN apk add --no-cache gettext
 
-COPY docker/nginx/conf/proxy-locations.conf /etc/nginx/conf.d/proxy-locations.conf
+COPY docker/nginx/includes/proxy-locations.conf /etc/nginx/includes/proxy-locations.conf
 COPY docker/nginx/conf/ip-only.conf /etc/nginx/templates/ip-only.conf
 COPY docker/nginx/conf/http-domain.conf.template /etc/nginx/templates/http-domain.conf.template
 COPY docker/nginx/conf/https.conf.template /etc/nginx/templates/https.conf.template

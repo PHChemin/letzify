@@ -10,5 +10,5 @@ server {
         root /var/www/certbot;
     }
 
-    include /etc/nginx/conf.d/proxy-locations.conf;
+    include /etc/nginx/includes/proxy-locations.conf;
 }
