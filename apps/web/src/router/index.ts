@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { getStoredToken } from '../api/client'
+import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -65,7 +66,6 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.requiresAdmin) {
-    const { useAuthStore } = await import('../stores/auth')
     const auth = useAuthStore()
     if (!auth.user) await auth.bootstrap()
     if (!auth.isAdmin) return { name: 'dashboard' }

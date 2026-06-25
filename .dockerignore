@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+.git
+.github
+.env
+.env.*
+!.env.docker.example
+apps/api/uploads
+uploads
+coverage
+*.md
+docs
+.agents
+skills-lock.json

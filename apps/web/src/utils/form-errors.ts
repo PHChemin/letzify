@@ -63,7 +63,7 @@ export function getErrorMessage(error: unknown): string {
     if (!error.response) {
       return (
         'Não foi possível conectar à API. Verifique se o backend está rodando em ' +
-        (import.meta.env.VITE_API_URL ?? 'http://localhost:3000')
+        (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api')
       )
     }
 
