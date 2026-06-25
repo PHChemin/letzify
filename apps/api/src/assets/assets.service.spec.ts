@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../prisma/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { AssetsService } from './assets.service';
 
 describe('AssetsService', () => {
@@ -19,6 +20,11 @@ describe('AssetsService', () => {
     },
   };
 
+  const storageServiceMock = {
+    buildFileMetadata: jest.fn(),
+    deleteFile: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,6 +32,10 @@ describe('AssetsService', () => {
         {
           provide: PrismaService,
           useValue: prismaServiceMock,
+        },
+        {
+          provide: StorageService,
+          useValue: storageServiceMock,
         },
       ],
     }).compile();
@@ -207,6 +217,7 @@ describe('AssetsService', () => {
   it('should remove an asset after confirming ownership', async () => {
     prismaServiceMock.visualAsset.findFirst.mockResolvedValue({
       id: 'asset-1',
+      fileKey: 'project-1/file.svg',
     });
     prismaServiceMock.visualAsset.delete.mockResolvedValue({
       id: 'asset-1',
@@ -217,5 +228,8 @@ describe('AssetsService', () => {
     expect(prismaServiceMock.visualAsset.delete).toHaveBeenCalledWith({
       where: { id: 'asset-1' },
     });
+    expect(storageServiceMock.deleteFile).toHaveBeenCalledWith(
+      'project-1/file.svg',
+    );
   });
 });

@@ -8,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { ValidationMessages } from '../../../common/utils/validation-messages';
+import { OptionalStringTransform } from '../../../common/transforms/optional-string.transform';
 
 export class CreatePaletteDto {
   @ApiProperty({ example: 'Paleta Principal' })
@@ -18,9 +19,9 @@ export class CreatePaletteDto {
   name: string;
 
   @ApiPropertyOptional({ example: 'Paleta principal do projeto' })
-  @IsString({ message: ValidationMessages.IsString('descrição') })
+  @OptionalStringTransform()
   @IsOptional()
-  @MinLength(3, { message: ValidationMessages.MinLength('descrição', 3) })
+  @IsString({ message: ValidationMessages.IsString('descrição') })
   @MaxLength(500, { message: ValidationMessages.MaxLength('descrição', 500) })
   description?: string;
 

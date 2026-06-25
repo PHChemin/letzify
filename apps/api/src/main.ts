@@ -5,13 +5,20 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { validationPipeConfig } from './common/pipes/validation-pipe.config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { writeFileSync } from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
+  app.enableCors({
+    origin: configService.getOrThrow<string>('CORS_ORIGIN'),
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
-    .setTitle('API com Swagger')
-    .setDescription('Documentação automática da API com Swagger')
+    .setTitle('Letzify API')
+    .setDescription('Documentação da API Letzify')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

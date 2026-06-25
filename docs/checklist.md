@@ -36,15 +36,15 @@
 ## 🎨 RA4 - Prototipagem e Integração Frontend
 
 - [x] **ID12:** A API do backend expõe documentação **Swagger (OpenAPI)** atualizada e interativa.
-- [ ] **ID13:** Materializou o PRD em **interfaces visuais** (React/Angular/Vue) utilizando prototipagem assistida por IA.
-- [ ] **ID14:** A interface consome os dados reais da API NestJS de forma síncrona, lidando corretamente com os **tokens JWT**.
+- [x] **ID13:** Materializou o PRD em **interfaces visuais** (React/Angular/Vue) utilizando prototipagem assistida por IA.
+- [x] **ID14:** A interface consome os dados reais da API NestJS de forma síncrona, lidando corretamente com os **tokens JWT**.
 
 ---
 
 ## 🚀 RA5 - Pipeline CI/CD e Implantação Contínua
 
-- [ ] **ID15:** As credenciais e **variáveis sensíveis** (como a `DATABASE_URL` da nuvem) estão seguras, ocultas do GitHub e injetadas via `ConfigModule`.
-- [ ] **ID16:** Configurou esteira de **CI (Continuous Integration)** via GitHub Actions para validação automática de código (Jest/Linting) antes do merge.
-- [ ] **ID17:** Realizou o **deploy** da aplicação em domínio público (nuvem), conectada a um banco de dados relacional em produção (Neon.tech).
+- [x] **ID15:** As credenciais e **variáveis sensíveis** (como a `DATABASE_URL` da nuvem) estão seguras, ocultas do GitHub e injetadas via `ConfigModule`.
+- [x] **ID16:** Configurou esteira de **CI (Continuous Integration)** via GitHub Actions para validação automática de código (Jest/Linting) antes do merge.
+- [x] **ID17:** Realizou o **deploy** da aplicação em domínio público (nuvem), conectada a um banco de dados relacional em produção (Neon.tech).
 
 ---

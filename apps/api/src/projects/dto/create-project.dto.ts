@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { ProjectStatus } from '../enums/project-status.enum';
 import { ValidationMessages } from '../../common/utils/validation-messages';
+import { OptionalStringTransform } from '../../common/transforms/optional-string.transform';
 
 export class CreateProjectDto {
   @ApiProperty({ example: 'Brandbook 2026' })
@@ -21,9 +22,9 @@ export class CreateProjectDto {
   @ApiPropertyOptional({
     example: 'Projeto de identidade visual da campanha 2026',
   })
-  @IsString({ message: ValidationMessages.IsString('descrição') })
+  @OptionalStringTransform()
   @IsOptional()
-  @MinLength(10, { message: ValidationMessages.MinLength('descrição', 10) })
+  @IsString({ message: ValidationMessages.IsString('descrição') })
   @MaxLength(1000, { message: ValidationMessages.MaxLength('descrição', 1000) })
   description?: string;
 

@@ -30,7 +30,6 @@ describe('UsersService', () => {
     prismaServiceMock.user.findUnique.mockResolvedValue({
       id: 'user-1',
       email: 'designer@letzify.com',
-      passwordHash: 'hashed',
       name: 'Designer',
       isActive: true,
       roles: ['USER'],
@@ -42,6 +41,15 @@ describe('UsersService', () => {
 
     expect(prismaServiceMock.user.findUnique).toHaveBeenCalledWith({
       where: { id: 'user-1' },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        isActive: true,
+        roles: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     expect(result).toEqual(
       expect.objectContaining({
