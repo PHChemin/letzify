@@ -5,7 +5,7 @@ export { getErrorMessage, getFieldErrors, sanitizeOptionalText } from '../utils/
 const TOKEN_KEY = 'letzify_access_token'
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -50,7 +50,7 @@ export async function unwrap<T>(promise: Promise<{ data: ApiSuccess<T> }>): Prom
 }
 
 export function getFileDownloadUrl(fileKey: string): string {
-  const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+  const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api'
   const [projectId, fileName] = fileKey.split('/')
   return `${base}/files/${projectId}/${fileName}`
 }
