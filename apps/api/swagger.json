@@ -1,0 +1,1985 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "summary": "Realiza o registro do usuário",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário registrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos no payload"
+          },
+          "409": {
+            "description": "Email já está em uso"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "Realiza login com email e senha",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos no payload"
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/admin": {
+      "get": {
+        "operationId": "AdminController_getAdmin",
+        "summary": "Acessa a área restrita de administração",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Mensagem de boas-vindas ao administrador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Bem Vindo, Admin!"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          },
+          "403": {
+            "description": "Usuário sem role ADMIN"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "operationId": "UsersController_me",
+        "summary": "Retorna o perfil do usuário autenticado",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Perfil do usuário autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects": {
+      "post": {
+        "operationId": "ProjectsController_create",
+        "summary": "Cria um novo projeto de identidade visual",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Projeto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos no payload"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ProjectsController_findAll",
+        "summary": "Lista os projetos do usuário autenticado",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Texto para filtrar projetos por nome ou descrição",
+            "schema": {
+              "example": "campanha",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de projetos retornada com sucesso"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "operationId": "ProjectsController_findOne",
+        "summary": "Busca um projeto pelo identificador",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projeto encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "ProjectsController_update",
+        "summary": "Atualiza os dados de um projeto",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Projeto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ProjectsController_remove",
+        "summary": "Remove um projeto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "projects"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/palettes": {
+      "post": {
+        "operationId": "PaletteController_create",
+        "summary": "Cria paleta vinculada a um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaletteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paleta criada com sucesso"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "PaletteController_findAll",
+        "summary": "Lista paletas de um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paletas retornadas com sucesso"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/palettes/{id}": {
+      "get": {
+        "operationId": "PaletteController_findOne",
+        "summary": "Busca uma paleta pelo identificador",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paleta encontrada com sucesso"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "PaletteController_update",
+        "summary": "Atualiza dados de uma paleta",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaletteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paleta atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "PaletteController_remove",
+        "summary": "Remove uma paleta existente",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "palettes"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/palettes/{paletteId}/colors": {
+      "get": {
+        "operationId": "ColorController_findAll",
+        "summary": "Lista as cores de uma paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cores retornada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "ColorController_create",
+        "summary": "Adiciona uma nova cor a paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateColorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cor criada com sucesso"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/palettes/{paletteId}/colors/reorder": {
+      "patch": {
+        "operationId": "ColorController_reorder",
+        "summary": "Reordena as cores da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da paleta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderColorsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ordem atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/palettes/{paletteId}/colors/{colorId}": {
+      "patch": {
+        "operationId": "ColorController_update",
+        "summary": "Atualiza uma cor da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colorId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da cor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateColorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cor atualizada com sucesso"
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ColorController_remove",
+        "summary": "Remove uma cor da paleta",
+        "parameters": [
+          {
+            "name": "paletteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colorId",
+            "required": true,
+            "in": "path",
+            "description": "UUID da cor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "colors"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/typographies": {
+      "post": {
+        "operationId": "TypographiesController_create",
+        "summary": "Cria uma tipografia vinculada a um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTypographyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipografia criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypographyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "TypographiesController_findAll",
+        "summary": "Lista tipografias de um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipografias retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TypographyResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/typographies/{id}": {
+      "get": {
+        "operationId": "TypographiesController_findOne",
+        "summary": "Busca uma tipografia pelo identificador",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da tipografia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipografia encontrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypographyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "TypographiesController_update",
+        "summary": "Atualiza os dados de uma tipografia",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da tipografia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTypographyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tipografia atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TypographyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID, projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "TypographiesController_remove",
+        "summary": "Remove uma tipografia existente",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da tipografia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "typographies"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/assets/upload": {
+      "post": {
+        "operationId": "AssetsController_upload",
+        "summary": "Faz upload de um asset visual para o projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "assetType": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file",
+                  "name",
+                  "assetType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asset visual enviado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/assets": {
+      "post": {
+        "operationId": "AssetsController_create",
+        "summary": "Cria um asset visual vinculado a um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asset visual criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "AssetsController_findAll",
+        "summary": "Lista assets visuais de um projeto",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets visuais retornados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/assets/{id}": {
+      "get": {
+        "operationId": "AssetsController_findOne",
+        "summary": "Busca um asset visual pelo identificador",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do asset visual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset visual encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "AssetsController_update",
+        "summary": "Atualiza os dados de um asset visual",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do asset visual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asset visual atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID, projeto ou payload inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AssetsController_remove",
+        "summary": "Remove um asset visual existente",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "description": "UUID do projeto",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID do asset visual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID ou projeto inválido"
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "assets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/files/{projectId}/{fileName}": {
+      "get": {
+        "operationId": "FilesController_download",
+        "summary": "Faz download de um asset visual armazenado",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileKey",
+            "required": true,
+            "in": "path",
+            "description": "Chave relativa do arquivo",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "files"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/dashboard/stats": {
+      "get": {
+        "operationId": "DashboardController_getStats",
+        "summary": "Retorna estatísticas do dashboard do usuário",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardStatsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token JWT ausente ou inválido"
+          }
+        },
+        "tags": [
+          "dashboard"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Letzify API",
+    "description": "Documentação da API Letzify",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "designer@letzify.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "senha123"
+          },
+          "name": {
+            "type": "string",
+            "example": "Designer Letzify"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "email": {
+            "type": "string",
+            "example": "designer@letzify.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Designer Letzify"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "roles": {
+            "type": "array",
+            "example": [
+              "USER"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "USER",
+                "ADMIN"
+              ]
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "isActive",
+          "roles",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "designer@letzify.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "senha123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "user"
+        ]
+      },
+      "CreateProjectDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Brandbook 2026"
+          },
+          "description": {
+            "type": "string",
+            "example": "Projeto de identidade visual da campanha 2026"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ALIGNMENT",
+              "IN_PROGRESS",
+              "FINISHED"
+            ],
+            "example": "ALIGNMENT"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ProjectResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Brandbook 2026"
+          },
+          "slug": {
+            "type": "string",
+            "example": "brandbook-2026"
+          },
+          "description": {
+            "type": "string",
+            "example": "Projeto de identidade visual da campanha 2026"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ALIGNMENT",
+              "IN_PROGRESS",
+              "FINISHED"
+            ],
+            "example": "ALIGNMENT"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "name",
+          "slug",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreatePaletteDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Paleta Principal"
+          },
+          "description": {
+            "type": "string",
+            "example": "Paleta principal do projeto"
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdatePaletteDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Paleta Principal"
+          },
+          "description": {
+            "type": "string",
+            "example": "Paleta principal do projeto"
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "CreateColorDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Primary Purple"
+          },
+          "hexCode": {
+            "type": "string",
+            "example": "#6B4773"
+          },
+          "rgbValue": {
+            "type": "string",
+            "example": "rgb(107,71,115)"
+          },
+          "cmykValue": {
+            "type": "string",
+            "example": "cmyk(10,50,0,20)"
+          }
+        },
+        "required": [
+          "name",
+          "hexCode"
+        ]
+      },
+      "ReorderColorsDto": {
+        "type": "object",
+        "properties": {
+          "colorIds": {
+            "example": [
+              "color-id-1",
+              "color-id-2",
+              "color-id-3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "colorIds"
+        ]
+      },
+      "UpdateColorDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Primary Purple"
+          },
+          "hexCode": {
+            "type": "string",
+            "example": "#6B4773"
+          },
+          "rgbValue": {
+            "type": "string",
+            "example": "rgb(107,71,115)"
+          },
+          "cmykValue": {
+            "type": "string",
+            "example": "cmyk(10,50,0,20)"
+          }
+        }
+      },
+      "CreateTypographyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "fontFamily": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Google Fonts"
+          },
+          "category": {
+            "type": "string",
+            "example": "sans-serif"
+          },
+          "weightMin": {
+            "type": "number",
+            "example": 400,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "weightMax": {
+            "type": "number",
+            "example": 700,
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "name",
+          "fontFamily",
+          "provider"
+        ]
+      },
+      "TypographyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "projectId": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "fontFamily": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Google Fonts"
+          },
+          "category": {
+            "type": "string",
+            "example": "sans-serif"
+          },
+          "weightMin": {
+            "type": "number",
+            "example": 400
+          },
+          "weightMax": {
+            "type": "number",
+            "example": 700
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "name",
+          "fontFamily",
+          "provider",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateTypographyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "fontFamily": {
+            "type": "string",
+            "example": "Inter"
+          },
+          "provider": {
+            "type": "string",
+            "example": "Google Fonts"
+          },
+          "category": {
+            "type": "string",
+            "example": "sans-serif"
+          },
+          "weightMin": {
+            "type": "number",
+            "example": 400,
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "weightMax": {
+            "type": "number",
+            "example": 700,
+            "minimum": 1,
+            "maximum": 1000
+          }
+        }
+      },
+      "AssetResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "projectId": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "uploadedById": {
+            "type": "string",
+            "example": "3f3a2c0f-92cc-4a49-a8c5-8e3de7f4f2c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-06-03T10:15:30.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "uploadedById",
+          "name",
+          "assetType",
+          "fileUrl",
+          "fileKey",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048,
+            "minimum": 1
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
+          }
+        },
+        "required": [
+          "name",
+          "assetType",
+          "fileUrl",
+          "fileKey"
+        ]
+      },
+      "UpdateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Logo Principal"
+          },
+          "assetType": {
+            "type": "string",
+            "example": "LOGO"
+          },
+          "fileUrl": {
+            "type": "string",
+            "example": "https://cdn.letzify.dev/assets/logo.svg"
+          },
+          "fileKey": {
+            "type": "string",
+            "example": "projects/project-1/logo.svg"
+          },
+          "mimeType": {
+            "type": "string",
+            "example": "image/svg+xml"
+          },
+          "fileSizeBytes": {
+            "type": "number",
+            "example": 2048,
+            "minimum": 1
+          },
+          "checksumSha256": {
+            "type": "string",
+            "example": "3f786850e387550fdab836ed7e6dc881de23001b86c8e6f89b9f8f0f2c8f4f12"
+          }
+        }
+      },
+      "DashboardStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalProjects": {
+            "type": "number",
+            "example": 12
+          },
+          "totalPalettes": {
+            "type": "number",
+            "example": 48
+          },
+          "totalAssets": {
+            "type": "number",
+            "example": 156
+          },
+          "totalTypographies": {
+            "type": "number",
+            "example": 24
+          },
+          "recentProjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectResponseDto"
+            }
+          }
+        },
+        "required": [
+          "totalProjects",
+          "totalPalettes",
+          "totalAssets",
+          "totalTypographies",
+          "recentProjects"
+        ]
+      }
+    }
+  }
+}

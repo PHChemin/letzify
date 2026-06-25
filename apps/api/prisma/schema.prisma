@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  isActive     Boolean  @default(true) @map("is_active")
+  roles        Role[]   @default([USER])
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  brandProjects BrandProject[]
+  visualAssets  VisualAsset[]
+
+  @@map("users")
+}
+
+model BrandProject {
+  id          String   @id @default(uuid()) @db.Uuid
+  ownerId     String   @map("owner_id") @db.Uuid
+  name        String
+  slug        String   @unique
+  description String?
+  status      String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  colorPalettes ColorPalette[]
+  typographies  Typography[]
+  visualAssets  VisualAsset[]
+
+  @@index([ownerId])
+  @@map("brand_projects")
+}
+
+model ColorPalette {
+  id          String   @id @default(uuid()) @db.Uuid
+  projectId   String   @map("project_id") @db.Uuid
+  name        String
+  description String?
+  isPrimary   Boolean  @default(false) @map("is_primary")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  project       BrandProject   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  paletteColors PaletteColor[]
+
+  @@index([projectId])
+  @@map("color_palettes")
+}
+
+model PaletteColor {
+  id        String   @id @default(uuid()) @db.Uuid
+  paletteId String   @map("palette_id") @db.Uuid
+  name      String
+  hexCode   String   @map("hex_code")
+  rgbValue  String?  @map("rgb_value")
+  cmykValue String?  @map("cmyk_value")
+  sortOrder Int      @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  palette ColorPalette @relation(fields: [paletteId], references: [id], onDelete: Cascade)
+
+  @@index([paletteId])
+  @@map("palette_colors")
+}
+
+model Typography {
+  id         String   @id @default(uuid()) @db.Uuid
+  projectId  String   @map("project_id") @db.Uuid
+  name       String
+  fontFamily String   @map("font_family")
+  provider   String
+  category   String?
+  weightMin  Int?     @map("weight_min")
+  weightMax  Int?     @map("weight_max")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  project BrandProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("typographies")
+}
+
+model VisualAsset {
+  id             String   @id @default(uuid()) @db.Uuid
+  projectId      String   @map("project_id") @db.Uuid
+  uploadedById   String   @map("uploaded_by_id") @db.Uuid
+  name           String
+  assetType      String   @map("asset_type")
+  fileUrl        String   @map("file_url")
+  fileKey        String   @map("file_key")
+  mimeType       String?  @map("mime_type")
+  fileSizeBytes  Int?     @map("file_size_bytes")
+  checksumSha256 String?  @map("checksum_sha256")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  project    BrandProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploadedBy User         @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([uploadedById])
+  @@map("visual_assets")
+}
